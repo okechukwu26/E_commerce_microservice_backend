@@ -1,0 +1,1 @@
+export {VendorModel, Vendor} from "./vendor"
