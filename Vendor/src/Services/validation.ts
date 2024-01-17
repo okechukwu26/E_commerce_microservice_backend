@@ -17,7 +17,7 @@ const phoneComplexity = {
 };
 
 //Registration validation
-export const registerUserSchema = Joi.object().keys({
+export const registerVendorSchema = Joi.object().keys({
   email: Joi.string().trim().lowercase().email().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
@@ -30,7 +30,9 @@ export const registerUserSchema = Joi.object().keys({
   phone: PasswordComplexity(phoneComplexity).required(),
 
 });
-
+export const loginVendorSchema = Joi.object().keys({
+  phone: PasswordComplexity(phoneComplexity).required(),
+})
 export const option = {
     abortEarly: false,
     errors: {

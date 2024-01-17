@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 dotenv.config()
-import express from "express"
+import express, { NextFunction, Request, Response } from "express"
 import {databaseConnection} from "./database"
 import ExpressApp from "./app"
 
@@ -14,6 +14,11 @@ const startServer = async () =>{
      databaseConnection.sync()  .then(() => console.log("Database connected successfully"))
      .catch((err) => console.log(err));
      await ExpressApp(app)
+     app.use((error:Error | any, req:Request, res:Response, next:NextFunction) =>{
+        const statusCode =  error.statusCode|| 500
+        const data =  error.data|| error.message
+        res.status(statusCode).json(data)
+     })
 
     app.listen(process.env.PORT, () =>{
         console.log(`listening on port ${process.env.PORT}`)

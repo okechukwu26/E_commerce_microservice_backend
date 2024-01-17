@@ -1,6 +1,10 @@
+import { option, registerUserSchema, loginUserSchema } from "./validation"
 import { UserRepository } from "../database"
 import { User } from "../database/model"
-import { FormateData } from "../utils"
+import { Utils } from "../utils"
+import shortid from "shortid"
+import { BadRequestError, ValidationError } from "../utils/ErrorHandler"
+import { v4 as uuid } from "uuid";
 
 
 
@@ -10,15 +14,50 @@ export class UserService{
         this.userRepository = new UserRepository()
     }
    
-    async createVendor(input:User) : Promise<User> {
-        const user =   await this.userRepository.createUser(input)
-      return FormateData(user)  as unknown as User
+    async createUser(input:User)
+    : Promise<User> 
+    {
+    const {error, value} = registerUserSchema.validate(input, option)
+    if(error){
+       throw new ValidationError(error.details[0].message,"validation error")
+    }
+    value.phone = Utils.intertionalizePhoneNumber(value.phone)
+    const phone =  await this.userRepository.Find({phone:value.phone})
+    if(phone){
+       throw new BadRequestError("phone already in use", "Bad Request")
+    }
+    const email =  await this.userRepository.Find({email:value.email})
+    if(email){
+       throw new BadRequestError("email already in use", "Bad Request")
+    }
+    value.referralCode = shortid()
+    value.role="vendor"
+     const vendor =   await this.userRepository.createUser(value)
+       return Utils.FormatData(vendor) as unknown as User
+
      
+    
+   }
+   async Login (input:{phone:string}){
+    const {error,value} = loginUserSchema.validate(input, option)
+    if(error){
+        throw new ValidationError(error.details[0].message,"validation error")
     }
-    async find(input:Record<string, string>) :Promise<User | null> {
-        const user = await this.userRepository.Find(input)
-        return FormateData(user) as unknown as User
+    const phone = Utils.intertionalizePhoneNumber(value.phone)
+
+    const exist =  await this.userRepository.Find({phone}) as unknown as User
+    if(!exist){
+        throw new BadRequestError("phone number does not exists", "Bad request")
     }
+    const token = await Utils.Encoded({id:exist.id})
+    console.log(token)
+
+    //send a verification code to the user phone number
+    
+        return Utils.FormatData(token)
+
+  }
+
 
 
 }

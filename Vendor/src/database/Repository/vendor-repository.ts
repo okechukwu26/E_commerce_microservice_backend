@@ -10,7 +10,7 @@ export class VendorRepository {
     }
     async Find(input:Record<string, string>){
         
-      return await VendorModel.findOne({where:input})
-
+     return await VendorModel.findOne({where:input})
    }
+  
 }

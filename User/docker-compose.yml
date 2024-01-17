@@ -1,0 +1,17 @@
+version: '3'
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: xxbtmpor
+      RABBITMQ_DEFAULT_PASS: 0h5oVeYExDIk3U3ijn5UP_KRNEgtmCef
+
+  app:
+    build: .
+    ports:
+      - "8002:8002"
+    depends_on:
+      - rabbitmq

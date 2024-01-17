@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Documents/nodejs_microservice"
+		},
+		{
+			"path": "../Documents/E_commerce_backend"
+		}
+	],
+	"settings": {}
+}
