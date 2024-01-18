@@ -1,13 +1,14 @@
 import { Channel } from "amqplib";
 import { Application, NextFunction, Request, Response } from "express";
 import { CategoryService } from "../services/category-service";
+import { AuthMiddleware } from "./middleware/auth";
 
 
 
 export default (app:Application, channel:Channel) =>{
     const service = new CategoryService()
 
-    app.post("/category", async (req:Request, res:Response, next:NextFunction) =>{
+    app.post("/category", AuthMiddleware.Authenticate(["admin"]),  async (req:Request, res:Response, next:NextFunction) =>{
         try {
             const category = await service.createCategory(req.body)
             return res.status(201).json(category)
@@ -47,7 +48,7 @@ export default (app:Application, channel:Channel) =>{
             
         }
     })
-    app.patch("/category/:id", async (req:Request, res:Response, next:NextFunction) =>{
+    app.patch("/category/:id", AuthMiddleware.Authenticate(["admin"]),  async (req:Request, res:Response, next:NextFunction) =>{
         try {
             const data = await service.updateCategory(req.params.id, req.body)
 
@@ -58,7 +59,7 @@ export default (app:Application, channel:Channel) =>{
             
         }
     })
-    app.delete("/category/:id", async (req:Request, res:Response, next:NextFunction) =>{
+    app.delete("/category/:id", AuthMiddleware.Authenticate(["admin"]),  async (req:Request, res:Response, next:NextFunction) =>{
         try {
             const data = await service.deleteCategory(req.params.id)
 

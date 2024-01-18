@@ -47,6 +47,14 @@ class BadRequestError extends AppError {
     }
 }
 
+class UnAuthorized extends AppError {
+    constructor(description = 'unauthorized', errorStack:any) {
+        super('UnAuthorized', STATUS_CODES.UNAUTHORIZED, description, true, undefined, errorStack, );
+    }
+}
+
+
+
 // 400
 class ValidationError extends AppError {
     constructor(description = 'Validation Error', errorStack: any) {
@@ -66,4 +74,5 @@ export  {  AppError,
     APIError,
     BadRequestError,
     ValidationError,
+    UnAuthorized,
     STATUS_CODES,}

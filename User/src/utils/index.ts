@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 dotenv.config()
 import Jwt from "jsonwebtoken"
 import amqplib, { Channel } from "amqplib"
-import { BadRequestError } from "./ErrorHandler";
+import { BadRequestError, UnAuthorized } from "./ErrorHandler";
 
 
 
@@ -15,6 +15,18 @@ export class Utils {
 
     } catch (error) {
       throw new BadRequestError("invalid data","bad request")
+      
+    }
+  }
+  static async Decoded(token:string): Promise<string |Jwt.JwtPayload> {
+    try {
+      const verify = Jwt.verify(token, process.env.JWT_SECRET!)
+      return verify
+      
+    } catch (error ) {
+      const customErr = error as Jwt.JsonWebTokenError
+      
+      throw new UnAuthorized(customErr.message, "")
       
     }
   }

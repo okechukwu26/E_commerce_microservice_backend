@@ -74,7 +74,7 @@ export const UpdateCategorySchema = Joi.object().keys({
   description:Joi.string().optional(),
   images:Joi.array().items(Joi.string()).optional(),
   quantity:Joi.number().optional(),
-  availble:Joi.string().optional()
+  available:Joi.string().optional()
 })
 
 export const option = {

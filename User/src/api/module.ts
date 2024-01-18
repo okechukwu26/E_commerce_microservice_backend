@@ -2,13 +2,14 @@ import { Channel } from "amqplib";
 import { Application, NextFunction, Request, Response } from "express";
 import { ModuleService } from "../services/module-service";
 import { Utils } from "../utils"
+import { AuthMiddleware } from "./middleware/auth";
 
 
 
 export default (app:Application, channel:Channel) =>{
         const service = new ModuleService()
         Utils.SubscribeMessage(channel, service);
-    app.post("/module", async (req:Request, res:Response, next:NextFunction) =>{
+    app.post("/module", AuthMiddleware.Authenticate(["admin"]), async (req:Request, res:Response, next:NextFunction) =>{
         try {
             const data= await service.createModule(req.body)
             return res.status(201).json(data)
@@ -39,7 +40,7 @@ export default (app:Application, channel:Channel) =>{
             
         }
     })
-    app.patch("/module/:id", async(req:Request,res:Response, next:NextFunction) =>{
+    app.patch("/module/:id", AuthMiddleware.Authenticate(["admin"]),   async(req:Request,res:Response, next:NextFunction) =>{
         try {
             const data = await service.updateModule(req.params.id, req.body, "UPDATE_MODULE")
             Utils.PublishMessage(channel, process.env.VendorService, JSON.stringify(data));
@@ -50,7 +51,7 @@ export default (app:Application, channel:Channel) =>{
             
         }
     })
-    app.delete("/module/:id", async(req:Request, res:Response, next:NextFunction) =>{
+    app.delete("/module/:id", AuthMiddleware.Authenticate(["admin"]),  async(req:Request, res:Response, next:NextFunction) =>{
         try {
             const data=  await service.delete(req.params.id);
 

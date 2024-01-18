@@ -1,5 +1,7 @@
 import { databaseConnection } from "../connection";
 import {Model, DataTypes} from "sequelize"
+import { CategoryModel } from "./category";
+import { UserModel } from "./user";
 
 export interface Product {
     id:string,
@@ -11,7 +13,8 @@ export interface Product {
     images:Array<string>,
     description:string,
     rating:number,
-    available:Availabilty
+    available:Availabilty,
+    ownerId:string
     
 }
 
@@ -29,12 +32,15 @@ ProductModel.init({
         primaryKey:true,
         allowNull:false
     },
+    ownerId:{ type:DataTypes.UUID},
     name:{
         type:DataTypes.STRING,
         allowNull:false
         },
  categoryId:{
          type:DataTypes.UUID,
+         allowNull:false,
+         onDelete: 'CASCADE',
           
          },
      moduleId:{
@@ -62,3 +68,10 @@ ProductModel.init({
      }
 
 },{sequelize:databaseConnection, tableName:"product"})
+
+//code snippet for relationship between product and category
+ProductModel.belongsTo(CategoryModel , { foreignKey:'categoryId'})
+    //module relationship
+    CategoryModel.hasMany(ProductModel, {foreignKey : "categoryId"})
+   UserModel.hasMany(ProductModel, {foreignKey : "ownerId"})
+    ProductModel.belongsTo(UserModel, {foreignKey:"ownerId"})

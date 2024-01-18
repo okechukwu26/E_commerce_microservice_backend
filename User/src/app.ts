@@ -2,7 +2,7 @@ import  { Application, json } from "express"
 import cors from "cors"
 import helmet from "helmet"
 import {Utils} from "./utils"
-import { Category, Media, Module, User, appEvents } from "./api"
+import { Category, Media, Module, Product, User, appEvents } from "./api"
 
 
 export default  async (app :Application) =>{
@@ -15,6 +15,7 @@ export default  async (app :Application) =>{
    Media(app, channel)
    Module(app, channel)
    Category(app, channel)
+   Product(app, channel)
   
 
 
