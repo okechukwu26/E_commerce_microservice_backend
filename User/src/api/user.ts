@@ -1,34 +1,53 @@
-import { Application } from "express";
+import { Application, NextFunction, Request, Response } from "express";
 import { UserService } from "../services/user-service";
 import { Channel } from "amqplib";
+import { WalletService } from "../services/wallet-service";
+import { User, UserModel } from "../database/model";
 import { v4 as uuid } from "uuid";
-import { registerUserSchema, option } from "./validation";
-import shortid from "shortid";
-import { intertionalizePhoneNumber } from "../utils";
 
-export default (app:Application, channel:Channel) => {
-    const service   = new UserService()
-    app.post("/user", async (req, res) => {
-            const {error} = registerUserSchema.validate(req.body, option)
-            if(error){
-                return res.status(400).json({error:error.details[0].message})
-            }
-        const id = uuid()
-            req.body.id = id
-            req.body.role="user"
-            req.body.referralCode=shortid()
-            req.body.phone = intertionalizePhoneNumber(req.body.phone)
-            const email =  await service.find({email:req.body.email})
-            if(email){
-                return res.status(400).json({error:"email already in use"})
-            }
-            const  phone =  await service.find({phone:req.body.phone})
-            if(phone){
-                return res.status(400).json({error:"phone number already in use"})
-            }
-        const user = await service.createVendor(req.body)
-     
-        res.status(201).json(user)
-    })
+export default (app: Application, channel: Channel) => {
+  const service = new UserService();
+  app.post(
+    "/register",
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const role = "user";
+        const id = uuid();
 
-}
+        const user = await service.createUser({ ...req.body, id }, role);
+
+        await new WalletService().createWallet(id);
+
+        res.status(201).json(user);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+  app.post(
+    "/register/admin",
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const role = "admin";
+        const id = uuid();
+
+        const user = await service.createUser({ ...req.body, id }, role);
+
+        res.status(201).json(user);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+  app.post(
+    "/login",
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const login = await service.Login(req.body);
+        return res.status(200).json(login);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+};
