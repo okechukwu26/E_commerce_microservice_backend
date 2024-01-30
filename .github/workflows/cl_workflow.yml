@@ -31,6 +31,7 @@ jobs:
     - name: Install Dependencies (User)
       working-directory: ./user
       run: |
+        yarn ci
         yarn install --frozen-lockfile
         yarn build
 
@@ -42,6 +43,7 @@ jobs:
     - name: Install Dependencies (Vendor)
       working-directory: ./vendor
       run: |
+       yarn ci
         yarn install --frozen-lockfile
         yarn build
 
