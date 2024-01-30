@@ -4,9 +4,9 @@ import path from "path";
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
-    console.log(file)
+    console.log(file);
     const split = file.mimetype.split("/")[0];
-    console.log(split)
+    console.log(split);
 
     if (split !== "image") {
       return cb(new Error("invalid image"), "");
@@ -17,14 +17,11 @@ const storage = multer.diskStorage({
 });
 
 const storages = multer.diskStorage({
-
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
     cb(null, `${file.fieldname}-${Date.now()}${ext}`);
   },
 });
-
-// Define the file filter to accept only image files
 const fileFilter = (
   req: Request,
   file: Express.Multer.File,
