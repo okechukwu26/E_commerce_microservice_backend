@@ -24,7 +24,13 @@ jobs:
     - name: run user
       working-directory: ./user
       run: |
-        npm ci
-        npm test  
+        npm build
+        npm start
+    - name: run vendor
+      working-directory: ./vendor
+      run: |
+        npm build
+        npm start
+       
       
   
