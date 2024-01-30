@@ -21,22 +21,14 @@ jobs:
     - name: Install Dependencies (User)
       working-directory: ./user
       run: |
-        npm install
-
-    - name: Build User Service
-      working-directory: ./user
-      run: |
-        npm run build
+        yarn install --frozen-lockfile
+        yarn build
 
     - name: Install Dependencies (Vendor)
       working-directory: ./vendor
       run: |
-        npm install
-
-    - name: Build Vendor Service
-      working-directory: ./vendor
-      run: |
-        npm run build
+        yarn install --frozen-lockfile
+        yarn build
 
     - name: Deploy to Production (Replace with your deployment script)
       run: |
