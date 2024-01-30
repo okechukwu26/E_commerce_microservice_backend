@@ -1,4 +1,3 @@
-
 name: micro_service
 
 on:
@@ -14,26 +13,30 @@ jobs:
       matrix:
         node-version: [14.x]
 
-
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: "yarn" 
-    - name: run user
+    - name: Cache Yarn dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ./user/node_modules
+          ./vendor/node_modules
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: Install dependencies and run user
       working-directory: ./user
       run: |
         yarn install --frozen-lockfile  
         yarn build  
         yarn start
-    - name: run vendor
+    - name: Install dependencies and run vendor
       working-directory: ./vendor
       run: |
         yarn install --frozen-lockfile  
         yarn build  
         yarn start
-       
-      
-  
