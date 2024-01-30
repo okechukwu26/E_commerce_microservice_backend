@@ -24,12 +24,14 @@ jobs:
     - name: run user
       working-directory: ./user
       run: |
-        npm build
+        npm install
+        npm run build
         npm start
     - name: run vendor
       working-directory: ./vendor
       run: |
-        npm build
+        npm install
+        npm run build
         npm start
        
       
