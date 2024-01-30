@@ -21,18 +21,19 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        cache: "yarn" 
     - name: run user
       working-directory: ./user
       run: |
-        npm install
-        npm run build
-        npm start
+        yarn install --frozen-lockfile  
+        yarn build  
+        yarn start
     - name: run vendor
       working-directory: ./vendor
       run: |
-        npm install
-        npm run build
-        npm start
+        yarn install --frozen-lockfile  
+        yarn build  
+        yarn start
        
       
   
