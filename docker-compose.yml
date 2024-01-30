@@ -6,52 +6,62 @@ services:
     container_name: postgres-db
     restart: always
     env_file:
-   
-      - ./.env 
+      - ./.env
+    environment:
+      POSTGRES_PASSWORD: Okechukwu29
     ports:
       - "5432:5432"
     volumes:
       - ./db_data:/var/lib/postgresql/data
+    networks:
+      - e-commerce_backend_network
 
   rabbitmq:
     image: rabbitmq:alpine
     container_name: rabbitmq
     ports:
-      - '5672:5672'
+      - "5672:5672"
+    networks:
+      - e-commerce_backend_network
 
   user:
     build:
       dockerfile: Dockerfile
-      context: ./User
+      context: ./user
     container_name: user
+    hostname: vendor
     ports:
-      - "8002:8002"
+      - "4000:4000"
     restart: always
     depends_on:
       - postgres-db
       - rabbitmq
     volumes:
       - .:/app
-      - /app/User/node_modules
+      - /app/user/node_modules
     env_file:
-      - ./User/.env
+      - ./user/.env
+    networks:
+      - e-commerce_backend_network
 
   vendor:
     build:
       dockerfile: Dockerfile
-      context: ./Vendor
-    container_name: Vendor
+      context: ./vendor
+    container_name: vendor
     ports:
-      - "8000:8000"
+      - "5000:5000"
     restart: always
     depends_on:
       - postgres-db
       - rabbitmq
     volumes:
       - .:/app
-      - /app/Vendor/node_modules
+      - /app/vendor/node_modules
     env_file:
-      - ./Vendor/.env
+      - ./vendor/.env
+    networks:
+      - e-commerce_backend_network
 
   nginx-proxy:
     build:
@@ -60,6 +70,11 @@ services:
     depends_on:
       - user
       - vendor
-   
+
     ports:
-      - 80:80
+      - 8080:80
+    networks:
+      - e-commerce_backend_network
+
+networks:
+  e-commerce_backend_network:

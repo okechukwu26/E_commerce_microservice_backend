@@ -6,8 +6,11 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: xxbtmpor
-      RABBITMQ_DEFAULT_PASS: 0h5oVeYExDIk3U3ijn5UP_KRNEgtmCef
+      RABBITMQ_DEFAULT_USER: ${{RABBITMQ_USER}}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      MSG_QUEUE_URL: ${{MSG_QUEUE_URL}}
+      EXCHANGE_NAME: ${{EXCHANGE_NAME}}
+      VENDOR_SERVICE: ${{VENDOR_SERVICE}}
 
   app:
     build: .
