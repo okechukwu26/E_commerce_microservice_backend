@@ -4,7 +4,7 @@ import { databaseConnection } from "../connection";
 export interface VendorOrder {
   id: string;
   user: User;
-  productId: Product[];
+  product: Product[];
   deliveryAddress: string;
   orderStatus: OrderStatus;
   createdAt: Date;
@@ -38,7 +38,7 @@ const VendorOrderSchema = {
     type: DataTypes.JSON,
     allowNull: false,
   },
-  productId: {
+  product: {
     type: DataTypes.JSONB,
     allowNull: false,
   },

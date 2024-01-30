@@ -52,6 +52,13 @@ export const UpdateProductSchema = Joi.object().keys({
   images: Joi.array().items(Joi.string()),
 });
 
+//Update OrderSchema
+
+export const updateOrderSchema = Joi.object().keys({
+  status: Joi.string(),
+  deliveryMan: Joi.string(),
+});
+
 export const option = {
   abortEarly: false,
   errors: {
