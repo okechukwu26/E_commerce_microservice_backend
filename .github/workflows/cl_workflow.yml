@@ -18,11 +18,21 @@ jobs:
       with:
         node-version: 14
 
+    - name: Debug (User Directory)
+      run: |
+        ls -la ./user
+        cat ./user/package.json
+
     - name: Install Dependencies (User)
       working-directory: ./user
       run: |
         yarn install --frozen-lockfile
         yarn build
+
+    - name: Debug (Vendor Directory)
+      run: |
+        ls -la ./vendor
+        cat ./vendor/package.json
 
     - name: Install Dependencies (Vendor)
       working-directory: ./vendor
@@ -33,6 +43,3 @@ jobs:
     - name: Deploy to Production (Replace with your deployment script)
       run: |
         echo "Deploying to production..."
-
-# Add additional steps for deployment to your hosting platform, container orchestration, etc.
-# You might need to deploy Docker containers or perform other deployment tasks.
