@@ -1,30 +1,46 @@
-
-name: micro_service
+name: Microservice CI/CD
 
 on:
-  pull_request:
-    branches: [ "master" ]
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
-    - name: run user
+        node-version: 14
+
+    - name: Install Dependencies (User)
       working-directory: ./user
       run: |
-        npm ci
-        npm test  
-      
-  
+        npm install
+
+    - name: Build User Service
+      working-directory: ./user
+      run: |
+        npm run build
+
+    - name: Install Dependencies (Vendor)
+      working-directory: ./vendor
+      run: |
+        npm install
+
+    - name: Build Vendor Service
+      working-directory: ./vendor
+      run: |
+        npm run build
+
+    - name: Deploy to Production (Replace with your deployment script)
+      run: |
+        echo "Deploying to production..."
+
+# Add additional steps for deployment to your hosting platform, container orchestration, etc.
+# You might need to deploy Docker containers or perform other deployment tasks.
