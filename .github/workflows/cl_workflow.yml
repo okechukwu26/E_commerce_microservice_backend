@@ -11,16 +11,16 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup Node.js and Yarn
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: 14
         registry-url: 'https://registry.yarnpkg.com'
 
     - name: Install Dependencies (User)
-      working-directory: ./user
+      working-directory: ../../user
       run: |
         yarn install --frozen-lockfile
         yarn build
@@ -29,25 +29,25 @@ jobs:
       run: |
         echo "Deploying User microservice..."
 
-  build-and-deploy-vendor:
-    runs-on: ubuntu-latest
+  # build-and-deploy-vendor:
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+  #   steps:
+  #   - name: Checkout Repository
+  #     uses: actions/checkout@v3
 
-    - name: Setup Node.js and Yarn
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
-        registry-url: 'https://registry.yarnpkg.com'
+  #   - name: Setup Node.js and Yarn
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: 14
+  #       registry-url: 'https://registry.yarnpkg.com'
 
-    - name: Install Dependencies (Vendor)
-      working-directory: ./vendor
-      run: |
-        yarn install --frozen-lockfile
-        yarn build
+  #   - name: Install Dependencies (Vendor)
+  #     working-directory: ./vendor
+  #     run: |
+  #       yarn install --frozen-lockfile
+  #       yarn build
 
-    - name: Deploy Vendor Microservice (Replace with your deployment script)
-      run: |
-        echo "Deploying Vendor microservice..."
+  #   - name: Deploy Vendor Microservice (Replace with your deployment script)
+  #     run: |
+  #       echo "Deploying Vendor microservice..."
