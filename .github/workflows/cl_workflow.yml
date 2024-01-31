@@ -1,13 +1,11 @@
-
 name: Node.js CI
 
 on:
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,17 +14,18 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-    - name: setup-node
-      working-directory: ./User  
-      run: |
-        yarn ci
-        yarn run build --if-present
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: setup-node
+        working-directory: ./User
+        run: |
+          yarn ci
+          yarn install --frozen-lockfile
+          yarn run build --if-present
     # - name: run user repo
     #   working-directory: ./user
     # - run: yarn ci
