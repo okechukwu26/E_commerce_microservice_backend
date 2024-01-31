@@ -1,53 +1,33 @@
-name: Microservices CI/CD
+
+name: Node.js CI
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
-  build-and-deploy-user:
+  build:
+
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-    - name: Setup Node.js and Yarn
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: 14
-        registry-url: 'https://registry.yarnpkg.com'
-
-    - name: Install Dependencies (User)
-      working-directory: ../../user
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+    - name: setup-node
+      working-directory: ./user  
       run: |
-        yarn install --frozen-lockfile
-        yarn build
-
-    - name: Deploy User Microservice (Replace with your deployment script)
-      run: |
-        echo "Deploying User microservice..."
-
-  # build-and-deploy-vendor:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #   - name: Checkout Repository
-  #     uses: actions/checkout@v3
-
-  #   - name: Setup Node.js and Yarn
-  #     uses: actions/setup-node@v3
-  #     with:
-  #       node-version: 14
-  #       registry-url: 'https://registry.yarnpkg.com'
-
-  #   - name: Install Dependencies (Vendor)
-  #     working-directory: ./vendor
-  #     run: |
-  #       yarn install --frozen-lockfile
-  #       yarn build
-
-  #   - name: Deploy Vendor Microservice (Replace with your deployment script)
-  #     run: |
-  #       echo "Deploying Vendor microservice..."
+        yarn ci
+        yarn run build --if-present
+    # - name: run user repo
+    #   working-directory: ./user
+    # - run: yarn ci
+    # - run: yarn run build --if-present
