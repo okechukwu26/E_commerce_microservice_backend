@@ -1,4 +1,4 @@
-name: Microservice CI/CD
+name: Microservices CI/CD
 
 on:
   push:
@@ -6,47 +6,48 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-user:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
-    - name: Debug (List Repository Contents)
-      run: |
-        pwd
-        ls -la
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+    - name: Setup Node.js and Yarn
+      uses: actions/setup-node@v2
       with:
         node-version: 14
-
-    - name: Debug (User Directory)
-      run: |
-        ls -la ./user
-        cat ./user/package.json
+        registry-url: 'https://registry.yarnpkg.com'
 
     - name: Install Dependencies (User)
       working-directory: ./user
       run: |
-        yarn ci
         yarn install --frozen-lockfile
         yarn build
 
-    - name: Debug (Vendor Directory)
+    - name: Deploy User Microservice (Replace with your deployment script)
       run: |
-        ls -la ./vendor
-        cat ./vendor/package.json
+        echo "Deploying User microservice..."
+
+  build-and-deploy-vendor:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js and Yarn
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+        registry-url: 'https://registry.yarnpkg.com'
 
     - name: Install Dependencies (Vendor)
       working-directory: ./vendor
       run: |
-       yarn ci
         yarn install --frozen-lockfile
         yarn build
 
-    - name: Deploy to Production (Replace with your deployment script)
+    - name: Deploy Vendor Microservice (Replace with your deployment script)
       run: |
-        echo "Deploying to production..."
+        echo "Deploying Vendor microservice..."
